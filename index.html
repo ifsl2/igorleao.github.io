@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html ng-app="AspectJML">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="style/reset.css">
+        <link rel="stylesheet" href="vendor/codemirror/lib/codemirror.css">
+        <link rel="stylesheet" href="vendor/codemirror/theme/eclipse.css">
+        <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.css">
+        <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap-theme.css">
+        <link rel="stylesheet" href="style/style.css">
+
+        <title>AspectJML Online</title>
+
+        <script src="vendor/codemirror/lib/codemirror.js"></script>
+        <script src="vendor/codemirror/mode/javascript/javascript.js"></script>
+        <script src="vendor/jquery/js/jquery-3.1.1.js"></script>
+        <script src="vendor/bootstrap/js/bootstrap.js"></script>
+        <script src="vendor/angular/angular.min.js"></script>
+        <script src="js/app.js"></script>
+        <script src="js/controllers/form.js"></script>
+    </head>
+    <body>
+        <form ng-controller="FormCtrl as form" ng-submit="compile()">
+            <div id="nav-editor">
+                <textarea id="editor"></textarea>
+            </div>
+            <div id="nav-options">
+            </div>
+            <footer>
+                <div clss="output" id="tabs">
+                  <ul class="nav nav-tabs" id="tabs">
+                    <li ng-class="{'active' : isSelected('main')}" id="tab-main" ng-click="selectTab('main')" ng-dblclick="renameTab('main')">
+                      <a href="#" data-toggle="pill">
+                        Main.java
+                      </a>
+                    </li>
+                    <li ng-repeat="tab in tabs" ng-class="{'active' : isSelected(tab)}" id="tab" ng-click="selectTab(tab)" ng-dblclick="renameTab(tab)">
+                      <a href="#">
+                        <button class="close closeTab" type="button" ng-click="removeTab(tab)">
+                          ×
+                        </button>
+                        <input  ng-value="tab" type="text" ng-model="inputValue" ng-click="$event.stopPropagation()" ng-keypress="renameEnter($event, tab, inputValue)" ng-show="renTab === tab"></input>
+                        <span ng-show="renTab != tab">{{tab}}</span>
+                      </a>
+                    </li>
+                    <li id="li-add-tab"><a href="#" id="add-tab" ng-click="addTab()">+</a></li>
+                  </ul>
+                </div>
+                <div class="output">
+                    <textarea id="console_output" rows="8" data-role="none" class="form-control" readonly>Output do compilador aqui</textarea>
+                    <button on-keyup="bla" keys="[13]" type="button" class="btn btn-default">
+                        <span class="glyphicon glyphicon-console" aria-hidden="true"></span>
+                        Executar
+                    </button>
+                </div>
+            </footer>
+        </form>
+        <script>
+            let editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+                lineNumbers: true,
+                styleActiveLine: true,
+                matchBrackets: true,
+                value: "var example = \"type here\"",
+                mode: "javascript"
+            });
+        </script>
+    </body>
+</html>
