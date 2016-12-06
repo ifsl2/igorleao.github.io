@@ -1,0 +1,17 @@
+<li class="ordinary" id="tab-1"><a href="#" data-toggle="pill"><button class="close closeTab" type="button" >×</button>Main</a>
+<li id="li-add-tab"><a href="#" id="add-tab" ng-click="addTab()">+</a>
+
+$scope.addTab = function() {
+  $scope.tabCount += 1;
+  $('<li class="ordinary"><a data-toggle="pill" href="#' + $scope.tabCount + '"><button class="close closeTab" type="button">×</button>Compose</a></li>').insertBefore("#li-add-tab");
+
+  $(".closeTab").click(function () {
+      $(this).parent().parent().remove();
+      // $('#tabs a:last').tab('show'); -> Tá dando error!!
+  });
+
+  $(".nav-tabs > .ordinary").click(function() {
+    //$(".active")
+    //$(this).addClass('active')
+  });
+}
