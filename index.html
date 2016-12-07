@@ -3,8 +3,7 @@
     <head>
         <meta charset="utf-8" />
         <link rel="stylesheet" href="style/reset.css">
-        <link rel="stylesheet" href="vendor/codemirror/lib/codemirror.css">
-        <link rel="stylesheet" href="vendor/codemirror/theme/eclipse.css">
+
         <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.css">
         <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap-theme.css">
         <link rel="stylesheet" href="vendor/nprogress/nprogress.css">
@@ -13,18 +12,50 @@
         <title>AspectJML Online</title>
 
         <script src="vendor/codemirror/lib/codemirror.js"></script>
-        <script src="vendor/codemirror/mode/javascript/javascript.js"></script>
+        <script src="./vendor/codemirror/mode/javascript/javascript.js"></script>
         <script src="vendor/jquery/js/jquery-3.1.1.js"></script>
         <script src="vendor/bootstrap/js/bootstrap.js"></script>
         <script src="vendor/angular/angular.min.js"></script>
         <script src="vendor/nprogress/nprogress.js"></script>
         <script src="js/app.js"></script>
         <script src="js/controllers/form.js"></script>
+
+        <script src="./vendor/codemirror/mode/clike/clike.js"></script>
+        <link rel="stylesheet" href="vendor/codemirror/lib/codemirror.css">
+        <link rel="stylesheet" href="vendor/codemirror/theme/eclipse.css">
     </head>
     <body>
         <form ng-controller="FormCtrl as form" ng-submit="compile()">
             <div id="nav-editor">
-                <textarea id="editor"></textarea>
+                <textarea id="editor">
+//*******************************************************************
+// NOTE: please read the 'More Info' tab to the right for shortcuts.
+//*******************************************************************
+
+import java.lang.Math; // headers MUST be above the first class
+
+// one class needs to have a main() method
+public class Main
+{
+    // arguments are passed using the text field below this editor
+    public static void main(String[] args) {
+        OtherClass myObject = new OtherClass("Hello World!");
+        System.out.print(myObject);
+    }
+}
+
+// you can add other public classes to this editor in any order
+class OtherClass
+{
+    private String message;
+    private boolean answer = false;
+    public OtherClass(String input) {
+        message = "Why, " + input + " Isn't this something?";
+    }
+    public String toString() {
+        return message;
+    }
+}</textarea>
             </div>
             <div id="nav-options">
             </div>
@@ -49,16 +80,27 @@
                   </ul>
                 </div>
                 <div class="output">
-                    <textarea id="console_output" rows="8" data-role="none" class="form-control" readonly>Output do compilador aqui</textarea>
+                    <div class="textAreaColumn">
+                        <div>
+                            <textarea rows="6" id="compiler_output" ng-model="compilerOutput" rows="8" data-role="none" class="form-control" readonly>(compiler output will display here)</textarea>
+                        </div>
+                        <div>
+                            <textarea rows="6" id="program_output" ng-model="programOutput" rows="8" data-role="none" class="form-control" readonly>(program output will display here)</textarea>
+                        </div>
+                    <div>
                     <button ng-disabled="compiling" on-keyup="bla" keys="[13]" type="submit" class="btn btn-default">
                         <span class="glyphicon glyphicon-console" aria-hidden="true"></span>
-                        Run
+                        Compile and Execute
                     </button>
-                    <button id="comp-options" ng-disabled="compiling" on-keyup="bla" keys="[13]" type="button" class="btn btn-default" data-toggle="modal" data-target="#optionsModal">
+                    <button id="download-btn" ng-disabled="compiling" on-keyup="bla" keys="[13]" type="button" class="btn btn-default">
+                        <span class="glyphicon glyphicon-download" aria-hidden="true"></span>
+                        Download Code
+                    </button>
+                    <button ng-disabled="compiling" on-keyup="bla" keys="[13]" type="button" class="btn btn-default" data-toggle="modal" data-target="#optionsModal">
                         <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
                         Options
                     </button>
-                    <button on-keyup="bla" keys="[13]" type="button" class="btn btn-default" ng-click="addCompilerOutputTab()">
+                    <button on-keyup="bla" keys="[13]" type="button" class="btn btn-default" ng-click="addCompilerOutputTab()" ng-show="len(compiler_outputs) > 0">
                         <span class="glyphicon glyphicon-scale" aria-hidden="true"></span>
                         Compiler Output
                     </button>
@@ -77,6 +119,10 @@
                         <label for="compiler-name" class="form-control-label">Compiler:</label>
                         <label class="radio-inline"><input type="radio" name="optradio" ng-model="compiler" ng-value="ASPECT_JML_COMPILER">AspectJML 1.7</label>
                         <label class="radio-inline"><input type="radio" name="optradio" ng-model="compiler" ng-value="JDK_COMPILER">Java 7</label>
+                      </div>
+                      <div class="form-group">
+                        <label for="compiler-name" class="form-control-label">Command line arguments:</label>
+                        <label class="radio-inline"><input name="optradio"class="form-control"></label>
                       </div>
                   </div>
                   <div class="modal-footer">
@@ -105,16 +151,17 @@
         </form>
         <script>
             var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+                mode: "text/x-java",
                 lineNumbers: true,
                 styleActiveLine: true,
                 matchBrackets: true,
-                value: "var example = \"type here\"",
-                mode: "javascript",
-                lineWrapping: true
+                lineWrapping: true,
+                tabMode: 'indent',
+                theme: "eclipse"
             });
 
             var height = isNaN(window.innerHeight) ? window.clientHeight : window.innerHeight;
-            editor.setSize("100%", height - 180);
+            editor.setSize("100%", height - 250);
         </script>
     </body>
 </html>
